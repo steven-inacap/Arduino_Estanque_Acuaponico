@@ -6,7 +6,6 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-// -------- Clase abstracta (interfaz ISensorAgua) --------
 class ISensorAgua {
 public:
     virtual void  iniciar() = 0;
@@ -14,12 +13,10 @@ public:
     virtual ~ISensorAgua() {}
 };
 
-// -------- Sensor de nivel (HC-SR04) --------
 class SensorNivel : public ISensorAgua {
 private:
     uint8_t pinTrig, pinEcho;
-    float   nivelActual;
-    float   alturaEstanque;    // cm
+    float nivelActual, alturaEstanque;
 public:
     SensorNivel(uint8_t trig, uint8_t echo, float altura = 100.0);
     void  iniciar() override;
@@ -28,13 +25,12 @@ public:
     float getNivelActual() const { return nivelActual; }
 };
 
-// -------- Sensor de temperatura (DS18B20) --------
 class SensorTemperatura : public ISensorAgua {
 private:
-    uint8_t         pinDatos;
-    OneWire*        oneWire;
+    uint8_t pinDatos;
+    OneWire* oneWire;
     DallasTemperature* ds;
-    float           ultimaTemp;
+    float ultimaTemp;
 public:
     SensorTemperatura(uint8_t pin);
     void  iniciar() override;
@@ -42,12 +38,10 @@ public:
     float leerTemperatura() { return leer(); }
 };
 
-// -------- Sensor de pH (analógico) --------
 class SensorPH : public ISensorAgua {
 private:
     uint8_t pinAnalogico;
-    float   pHNeutro;      // voltaje a pH 7
-    float   pendiente;     // V por unidad de pH
+    float pHNeutro, pendiente;
 public:
     SensorPH(uint8_t pin, float pH7 = 2.5, float slope = 0.18);
     void  iniciar() override;
