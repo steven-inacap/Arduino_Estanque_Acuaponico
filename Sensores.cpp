@@ -12,21 +12,17 @@ void SensorNivel::iniciar() {
 }
 
 float SensorNivel::leer() {
-    // Pulso de 10us en TRIG
     digitalWrite(pinTrig, LOW);  delayMicroseconds(2);
     digitalWrite(pinTrig, HIGH); delayMicroseconds(10);
     digitalWrite(pinTrig, LOW);
     
-    // Medir eco (timeout 30ms)
     unsigned long dur = pulseIn(pinEcho, HIGH, 30000UL);
-    if (dur == 0) return nivelActual;   // sin eco, mantener último
+    if (dur == 0) return nivelActual;
     
-    // Distancia sensor→superficie (cm)
     float distancia = dur * 0.0343f / 2.0f;
-    if (distancia < 0)      distancia = 0;
+    if (distancia < 0) distancia = 0;
     if (distancia > alturaEstanque) distancia = alturaEstanque;
     
-    // Nivel de agua = altura total - distancia
     nivelActual = alturaEstanque - distancia;
     return nivelActual;
 }
@@ -44,7 +40,7 @@ void SensorTemperatura::iniciar() {
 float SensorTemperatura::leer() {
     ds->requestTemperatures();
     float t = ds->getTempCByIndex(0);
-    if (t == DEVICE_DISCONNECTED_C) return ultimaTemp;  // sensor desconectado
+    if (t == DEVICE_DISCONNECTED_C) return ultimaTemp;
     ultimaTemp = t;
     return t;
 }
@@ -58,7 +54,6 @@ void SensorPH::iniciar() {
 }
 
 float SensorPH::leer() {
-    // Promedio de 10 muestras para estabilizar
     long suma = 0;
     for (uint8_t i = 0; i < 10; i++) {
         suma += analogRead(pinAnalogico);
@@ -66,7 +61,6 @@ float SensorPH::leer() {
     }
     float adc = suma / 10.0f;
     float voltaje = adc * (5.0f / 1023.0f);
-    // pH = 7 + (V_neutro - V) / pendiente
     float ph = 7.0f + (pHNeutro - voltaje) / pendiente;
     if (ph < 0)  ph = 0;
     if (ph > 14) ph = 14;
