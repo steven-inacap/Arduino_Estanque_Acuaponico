@@ -7,19 +7,17 @@ Umbral::Umbral(TipoParametro t, float min, float max)
     : tipo(t), minimo(min), maximo(max), activo(true) {}
 
 bool Umbral::setUmbrales(float min, float max) {
-    if (min >= max) return false;      // validación
+    if (min >= max) return false;
     minimo = min;
     maximo = max;
     activo = true;
     return true;
 }
 
-bool Umbral::estaFueraDeRango(float valor) const {
-    if (!activo) return false;
-    return (valor < minimo || valor > maximo);
+bool Umbral::estaFueraDeRango(float v) const {
+    return activo && (v < minimo || v > maximo);
 }
 
-bool Umbral::estaBajoMinimo(float valor) const {
-    if (!activo) return false;
-    return valor < minimo;
+bool Umbral::estaBajoMinimo(float v) const {
+    return activo && (v < minimo);
 }
